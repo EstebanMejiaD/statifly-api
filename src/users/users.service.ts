@@ -121,38 +121,30 @@ export class UsersService {
     }
   }
 
-  // async findAll(companyCode: number): Promise<ResponseDto<UserComplete[] | undefined>> {
-  //   let response: ResponseDto<UserComplete[] | undefined>;
-  //   try {
-  //     const users = await this.prisma.user.findMany({
-  //       where: { companyCode },
-  //       omit: {
-  //         password: true,
-  //       },
-  //     });
+  async findAll(): Promise<ResponseDto<any>> {
+    let response: ResponseDto<any>;
+    try {
+      const users = await this.prisma.user.findMany({
+        omit: {
+          password: true,
+        },
+      });
 
-  //     const usersCompletes: UserComplete[] = await Promise.all(users.map(async user => {
-  //       return {
-  //         ...user,
-  //         groupName: user.groupId ? (await this.prisma.group.findUnique({ where: { id: user.groupId } }))?.name || null : null,
-  //         companyName: user.companyCode ? (await this.prisma.company.findUnique({ where: { code: user.companyCode } }))?.name || null : null,
-  //       };
-  //     }));
-  //     response = {
-  //       status: 200,
-  //       message: 'Usuarios encontrados',
-  //       data: usersCompletes,
-  //     };
-  //   } catch (error) {
-  //     this.logger.error('Error al buscar usuarios', error.message);
-  //     response = {
-  //       status: 500,
-  //       message: 'Error al buscar usuarios',
-  //       data: undefined,
-  //     };
-  //   }
-  //   return response;
-  // }
+      response = {
+        status: 200,
+        message: 'Usuarios encontrados',
+        data: users,
+      };
+    } catch (error: any) {
+      this.logger.error('Error al buscar usuarios', error.message);
+      response = {
+        status: 500,
+        message: 'Error al buscar usuarios',
+        data: undefined,
+      };
+    }
+    return response;
+  }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<ResponseDto<Omit<User, 'password'> | undefined>> {
     let response: ResponseDto<Omit<User, 'password'> | undefined>;

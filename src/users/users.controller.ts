@@ -75,13 +75,13 @@ export class UsersController {
     res.status(response.status).json(response);
   }
 
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles(Role.SUPERADMIN)
-  // @Get(':companyCode')
-  // async findAll(@Param('companyCode') companyCode: string, @Res() res: Response) {
-  //   const response = await this.usersService.findAll(+companyCode);
-  //   res.status(response.status).json(response);
-  // }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.ADMIN)
+  @Get()
+  async findAll(@Res() res: Response) {
+    const response = await this.usersService.findAll();
+    res.status(response.status).json(response);
+  }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
