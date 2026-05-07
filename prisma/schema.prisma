@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PLAYER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model User {
+  id           String      @id @default(uuid())
+  name         String
+  email        String      @unique
+  phone        String?
+  password     String
+  role         Role        @default(PLAYER)
+  status       UserStatus  @default(ACTIVE)
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  sessions     Session[]
+}
+
+
+model Sport {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  Session[]
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  userId     String
+  sportId    String
+
+  startTime  DateTime
+  endTime    DateTime?
+  duration   Int?      // seconds
+
+  distance   Float?
+  maxSpeed   Float?
+  avgSpeed   Float?
+
+  createdAt  DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id])
+  sport      Sport     @relation(fields: [sportId], references: [id])
+  metrics    MetricPoint[]
+}
+
+model MetricPoint {
+  id           String   @id @default(uuid())
+  sessionId    String
+
+  timestamp    Int      // epoch (como tu JSON)
+  lat          Float
+  lng          Float
+
+  speed        Float
+  acceleration Float
+
+  gx           Float?
+  gy           Float?
+  gz           Float?
+
+  session      Session  @relation(fields: [sessionId], references: [id])
+
+  @@index([sessionId])
+  @@index([timestamp])
+}
