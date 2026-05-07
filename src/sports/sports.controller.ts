@@ -18,22 +18,26 @@ export class SportsController {
   }
 
   @Get()
-  async findAll() {
-    return await this.sportsService.findAll();
+  async findAll(@Res() res: Response) {
+    const response = await this.sportsService.findAll();
+    res.status(response.status).json(response);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.sportsService.findOne(id);
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+    const response = await this.sportsService.findOne(id);
+    res.status(response.status).json(response);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateSportDto: CreateSportDto) {
-    return await this.sportsService.update(id, updateSportDto);
+  async update(@Param('id') id: string, @Body() updateSportDto: CreateSportDto, @Res() res: Response) {
+    const response = await this.sportsService.update(id, updateSportDto);
+    res.status(response.status).json(response);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.sportsService.remove(id);
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    const response = await this.sportsService.remove(id);
+    res.status(response.status).json(response);
   }
 }
