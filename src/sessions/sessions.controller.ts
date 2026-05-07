@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { Response } from 'express';
 import { find } from 'rxjs';
 import { FindAllSessionDto } from './dto/findAll-session.dto';
+import { JwtAuthGuard, RolesGuard } from 'src/common';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('sessions')
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
