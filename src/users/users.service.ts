@@ -66,7 +66,9 @@ export class UsersService {
     return response;
   }
 
-  async login(loginDto: LoginDto): Promise<ResponseDto<Omit<User, 'password'> | undefined>> {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<ResponseDto<Omit<User, 'password'> | undefined>> {
     let response: ResponseDto<Omit<User, 'password'> | undefined>;
     try {
       const { email, password } = loginDto;
@@ -84,7 +86,7 @@ export class UsersService {
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
-      
+
       if (!isPasswordValid) {
         response = {
           status: 401,
@@ -95,7 +97,6 @@ export class UsersService {
       }
 
       const payload = { sub: user.id, role: user.role };
-
 
       // Elimina el password del objeto user antes de retornarlo
       const { password: userPassword, ...userWithoutPassword } = user;
@@ -146,13 +147,15 @@ export class UsersService {
     return response;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<ResponseDto<Omit<User, 'password'> | undefined>> {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<ResponseDto<Omit<User, 'password'> | undefined>> {
     let response: ResponseDto<Omit<User, 'password'> | undefined>;
     try {
       console.log({ id, updateUserDto });
 
       const { email, password } = updateUserDto;
-
 
       if (email) {
         const userWithEmail = await this.prisma.user.findUnique({
@@ -168,14 +171,18 @@ export class UsersService {
         }
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
+
+      const updateData: any = { ...updateUserDto };
+      if (hashedPassword) {
+        updateData.password = hashedPassword;
+      } else {
+        delete updateData.password;
+      }
 
       const user = await this.prisma.user.update({
         where: { id },
-        data: {
-          ...updateUserDto,
-          password: hashedPassword,
-        },
+        data: updateData,
         omit: {
           password: true,
         },
@@ -189,7 +196,7 @@ export class UsersService {
       this.logger.error('Error al actualizar usuario: ', error.message);
       response = {
         status: 500,
-        message: 'Error al actualizar usuario: '+error.message,
+        message: 'Error al actualizar usuario: ' + error.message,
         data: undefined,
       };
     }

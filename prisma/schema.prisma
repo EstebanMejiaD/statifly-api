@@ -23,69 +23,133 @@ enum UserStatus {
   SUSPENDED
 }
 
-model User {
-  id           String      @id @default(uuid())
-  name         String
-  email        String      @unique
-  phone        String?
-  password     String
-  role         Role        @default(PLAYER)
-  status       UserStatus  @default(ACTIVE)
-
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  sessions     Session[]
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }
 
+enum DominantFoot {
+  LEFT
+  RIGHT
+  BOTH
+}
 
-model Sport {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  isActive  Boolean  @default(true)
+enum CompetitiveLevel {
+  BEGINNER
+  INTERMEDIATE
+  SEMIPROFESSIONAL
+  PROFESSIONAL
+}
+
+model User {
+  id               String            @id @default(uuid())
+  name             String
+  lastName         String
+  birthDate        DateTime
+  gender           Gender
+  dominantFoot     DominantFoot?
+  height           Float?
+  weight           Float?
+  competitiveLevel CompetitiveLevel?
+  email            String            @unique
+  phone            String?
+  password         String
+  role             Role              @default(PLAYER)
+  status           UserStatus        @default(ACTIVE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sessions  Session[]
+  sessions    Session[]
+  playgrounds Playground[]
+}
+
+model Sport {
+  id       String  @id @default(uuid())
+  name     String  @unique
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions    Session[]
+  playgrounds Playground[]
+}
+
+enum PlaygroundType {
+  FOOTBALL_11
+  FOOTBALL_7
+  FUTSAL
+  TENNIS
+  BASKETBALL
+}
+
+model Playground {
+  id String @id @default(uuid())
+
+  name String
+
+  sportId String
+
+  type PlaygroundType?
+
+  coordinates Json
+
+  dimensions Json?
+
+  createdBy String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sport Sport @relation(fields: [sportId], references: [id])
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  sessions Session[]
 }
 
 model Session {
-  id         String   @id @default(uuid())
-  userId     String
-  sportId    String
+  id           String  @id @default(uuid())
+  userId       String
+  sportId      String
+  playgroundId String?
 
-  startTime  DateTime
-  endTime    DateTime?
-  duration   Int?      // seconds
+  name        String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int? // seconds
 
-  distance   Float?
-  maxSpeed   Float?
-  avgSpeed   Float?
+  distance Float?
+  maxSpeed Float?
+  avgSpeed Float?
 
-  createdAt  DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  user       User      @relation(fields: [userId], references: [id])
-  sport      Sport     @relation(fields: [sportId], references: [id])
+  user       User          @relation(fields: [userId], references: [id])
+  sport      Sport         @relation(fields: [sportId], references: [id])
+  playground Playground?   @relation(fields: [playgroundId], references: [id])
   metrics    MetricPoint[]
 }
 
 model MetricPoint {
-  id           String   @id @default(uuid())
-  sessionId    String
+  id        String @id @default(uuid())
+  sessionId String
 
-  timestamp    Int      // epoch (como tu JSON)
-  lat          Float
-  lng          Float
+  timestamp Int // epoch (como tu JSON)
+  lat       Float
+  lng       Float
 
   speed        Float
   acceleration Float
 
-  gx           Float?
-  gy           Float?
-  gz           Float?
+  gx Float?
+  gy Float?
+  gz Float?
 
-  session      Session  @relation(fields: [sessionId], references: [id])
+  session Session @relation(fields: [sessionId], references: [id])
 
   @@index([sessionId])
   @@index([timestamp])

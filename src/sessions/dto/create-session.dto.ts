@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateSessionDto {
 
@@ -12,6 +12,21 @@ export class CreateSessionDto {
   @IsString()
   @IsNotEmpty()
   sportId!:string;
+
+  @ApiProperty({ description: 'ID del campo de juego asociado a la sesión' })
+  @IsString()
+  @IsNotEmpty()
+  playgroundId!:string;  
+
+  @ApiProperty({ description: 'Nombre de la sesión' })
+  @IsString()
+  @IsNotEmpty()
+  name!:string;
+
+  @ApiProperty({ description: 'Descripción de la sesión' })
+  @IsString()
+  @IsOptional()
+  description?:string;  
 
   @ApiProperty({ description: 'Fecha y hora de inicio de la sesión' })
   @IsNotEmpty()

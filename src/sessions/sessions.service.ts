@@ -14,7 +14,6 @@ export class SessionsService {
   async create(createSessionDto: CreateSessionDto) {
     let response: ResponseDto<any>;
     try {
-
       const user = await this.prisma.user.findUnique({
         where: { id: createSessionDto.userId },
       });
@@ -34,6 +33,18 @@ export class SessionsService {
         response = {
           status: 404,
           message: 'Deporte no encontrado',
+          data: undefined,
+        };
+        return response;
+      }
+
+      const playground = await this.prisma.playground.findUnique({
+        where: { id: createSessionDto.playgroundId },
+      });
+      if (!playground) {
+        response = {
+          status: 404,
+          message: 'Campo de juego no encontrado',
           data: undefined,
         };
         return response;
@@ -100,7 +111,7 @@ export class SessionsService {
           id: id,
           userId: findAllSessionDto.userId,
           sportId: findAllSessionDto.sportId,
-        }
+        },
       });
       if (!session) {
         response = {
@@ -115,7 +126,6 @@ export class SessionsService {
         message: 'Sesión obtenida con éxito',
         data: session,
       };
-
     } catch (error) {
       this.logger.error('Error al obtener la sesión', error);
       response = {
@@ -130,8 +140,8 @@ export class SessionsService {
   async update(id: string, updateSessionDto: UpdateSessionDto) {
     let response: ResponseDto<any>;
     try {
-
-      const { startTime, maxSpeed, endTime, duration, distance, avgSpeed } = updateSessionDto;
+      const { startTime, maxSpeed, endTime, duration, distance, avgSpeed } =
+        updateSessionDto;
       const session = await this.prisma.session.findUnique({
         where: { id },
       });
@@ -162,7 +172,6 @@ export class SessionsService {
         message: 'Sesión actualizada con éxito',
         data: updatedSession,
       };
-
     } catch (error) {
       this.logger.error('Error al actualizar la sesión', error);
       response = {
@@ -198,7 +207,6 @@ export class SessionsService {
         message: 'Sesión eliminada con éxito',
         data: undefined,
       };
-
     } catch (error) {
       this.logger.error('Error al eliminar la sesión', error);
       response = {
