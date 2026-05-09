@@ -4,6 +4,7 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { FindAllSessionDto } from './dto/findAll-session.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SessionsService {
@@ -51,7 +52,11 @@ export class SessionsService {
       }
 
       const session = await this.prisma.session.create({
-        data: createSessionDto,
+        data: {
+          ...createSessionDto,
+          additionalData:
+            createSessionDto.additionalData as unknown as Prisma.InputJsonValue,
+        },
       });
       response = {
         status: 201,

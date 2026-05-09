@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 
 export class CreateSessionDto {
 
@@ -52,4 +52,8 @@ export class CreateSessionDto {
   @ApiProperty({ description: 'Velocidad promedio en la sesión' })
   @IsNumber()
   avgSpeed!:number;
+
+  @ApiProperty({ description: 'Datos adicionales de la sesión' })
+  @IsOptional()
+  additionalData?: Object;
 }
