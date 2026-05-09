@@ -147,6 +147,32 @@ export class UsersService {
     return response;
   }
 
+ async findOneById(id: string): Promise<ResponseDto<any>> {
+    let response: ResponseDto<any>;
+    try {
+      const users = await this.prisma.user.findUnique({
+        where: { id },
+        omit: {
+          password: true,
+        },
+      });
+
+      response = {
+        status: 200,
+        message: 'Usuario encontrado',
+        data: users,
+      };
+    } catch (error: any) {
+      this.logger.error('Error al buscar usuario', error.message);
+      response = {
+        status: 500,
+        message: 'Error al buscar usuario',
+        data: undefined,
+      };
+    }
+    return response;
+  }  
+
   async updateUser(
     id: string,
     updateUserDto: UpdateUserDto,

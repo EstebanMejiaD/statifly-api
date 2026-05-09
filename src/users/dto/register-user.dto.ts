@@ -95,7 +95,7 @@ export class RegisterUserDto {
     },
     {
       message:
-        'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number',
+        'La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula, una letra minúscula y un número',
     },
   )
   password!: string;

@@ -106,6 +106,21 @@ export class UsersController {
     res.status(response.status).json(response);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('me')
+  async authMe(
+    @Res() res: Response,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    
+    const response = await this.usersService.findOneById(
+      user.sub,
+    );
+    res.status(response.status).json(response);
+  }
+
+  
+
   // @UseGuards(JwtAuthGuard, RolesGuard)
   // @Roles(Role.SUPERADMIN)
   // @Delete(':id')
