@@ -13,7 +13,7 @@ generator erd {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -160,4 +160,5 @@ model MetricPoint {
 
   @@index([sessionId])
   @@index([timestamp])
+  @@index([sessionId, timestamp])
 }
