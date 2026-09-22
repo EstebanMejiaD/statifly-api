@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, Query } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
@@ -19,13 +19,13 @@ export class SessionsController {
   }
 
   @Get()
-  async findAll(@Body() findAllSessionDto: FindAllSessionDto, @Res() res: Response) {
+  async findAll(@Query() findAllSessionDto: FindAllSessionDto, @Res() res: Response) {
     const response = await this.sessionsService.findAll(findAllSessionDto);
     res.status(response.status).json(response);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Res() res: Response, @Body() findAllSessionDto: FindAllSessionDto) {
+  async findOne(@Param('id') id: string, @Res() res: Response, @Query() findAllSessionDto: FindAllSessionDto) {
     const response = await this.sessionsService.findOne(id, findAllSessionDto);
     res.status(response.status).json(response);
   }
