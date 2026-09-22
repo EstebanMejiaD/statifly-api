@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res, Query } from '@nestjs/common';
 import { MetricPointsService } from './metric-points.service';
 import { CreateMetricPointDto } from './dto/create-metric-point.dto';
 import { UpdateMetricPointDto } from './dto/update-metric-point.dto';
@@ -30,7 +30,7 @@ createMany(
 }
 
   @Get()
-  async findAll(@Body() findAllMetricPointDto: FindAllMetricPointDto, @Res() res: Response) {
+  async findAll(@Query() findAllMetricPointDto: FindAllMetricPointDto, @Res() res: Response) {
     const response = await this.metricPointsService.findAll(findAllMetricPointDto);
     res.status(response.status).json(response);
   }

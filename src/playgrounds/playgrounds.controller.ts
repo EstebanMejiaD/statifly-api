@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@nestjs/common';
 import { PlaygroundsService } from './playgrounds.service';
 import { CreatePlaygroundDto } from './dto/create-playground.dto';
 import { UpdatePlaygroundDto } from './dto/update-playground.dto';
@@ -16,7 +16,7 @@ export class PlaygroundsController {
   }
 
   @Get()
-  async findAll(@Body() findAllPlaygroundDto: FindAllPlaygroundDto, @Res() res: Response) {
+  async findAll(@Query() findAllPlaygroundDto: FindAllPlaygroundDto, @Res() res: Response) {
     const response = await this.playgroundsService.findAll(findAllPlaygroundDto);
     return res.status(response.status).json(response);
   }
